@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#030712">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ALTHERA">
+<meta name="description" content="ALTHERA — 32 ta platformani birlashtirgan yagona raqamli ekotizim. Fintech, GovTech, EdTech va Global Servislar.">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<title>ALTHERA — Super Platforma</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* =========================================
+   ALTHERA SUPER PLATFORM — v1.0.0 MVP
+   © 2026 Allamurotov Azimbek
+   Roadmap: 0–24 oy
+========================================= */
+:root {
+  --bg:     #030712;
+  --bg1:    #070f1e;
+  --bg2:    #0c1829;
+  --sf:     #0f2040;
+  --sf2:    #162d55;
+  --border: rgba(255,255,255,0.07);
+  --bd2:    rgba(255,255,255,0.13);
+  --blue:   #1a6ef5;
+  --blue2:  #3b82f6;
+  --cyan:   #06cdf4;
+  --cyan2:  #22d3ee;
+  --gold:   #f59e0b;
+  --green:  #10b981;
+  --red:    #ef4444;
+  --purple: #8b5cf6;
+  --pink:   #ec4899;
+  --text:   #eef2ff;
+  --t2:     #94a3b8;
+  --muted:  #475569;
+  --r:      14px;
+  --r2:     20px;
+  --r3:     28px;
+  --st:     env(safe-area-inset-top,0px);
+  --sb:     env(safe-area-inset-bottom,0px);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;}
+::-webkit-scrollbar{display:none;}
+
+/* ── UTILITY ── */
+.mono{font-family:'JetBrains Mono',monospace;}
+.grad{background:linear-gradient(135deg,#fff 20%,var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.grad-gold{background:linear-gradient(135deg,var(--gold),#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.grad-green{background:linear-gradient(135deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+/* ── APP ── */
+#app{position:fixed;inset:0;overflow:hidden;}
+
+/* ── SCREENS ── */
+.scr{
+  position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);
+  transition:transform .4s cubic-bezier(.25,.46,.45,.94),opacity .3s ease;
+  will-change:transform;overflow:hidden;
+}
+.scr.hide{transform:translateX(105%);opacity:0;pointer-events:none;}
+.scr.hide.up{transform:translateY(100%);opacity:0;}
+.scr.show{transform:none;opacity:1;}
+
+/* ── STATUS BAR ── */
+.sb{
+  flex-shrink:0;
+  height:calc(50px + var(--st));
+  padding-top:var(--st);
+  padding:calc(var(--st) + 12px) 20px 12px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg);border-bottom:1px solid var(--border);
+  position:relative;z-index:20;flex-shrink:0;
+}
+.sb-logo{font-weight:900;font-size:1.1rem;letter-spacing:.12em;background:linear-gradient(90deg,#fff,var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sb-back{display:flex;align-items:center;gap:8px;color:var(--cyan);font-weight:600;cursor:pointer;font-size:.9rem;}
+.sb-title{font-weight:700;font-size:1rem;}
+.sb-r{display:flex;align-items:center;gap:8px;color:var(--t2);font-size:.78rem;}
+.sb-notif{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);}
+
+/* ── SCROLL AREA ── */
+.sa{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(72px + var(--sb));}
+
+/* ── BOTTOM NAV ── */
+#bnav{
+  position:absolute;bottom:0;left:0;right:0;z-index:200;
+  height:calc(62px + var(--sb));padding-bottom:var(--sb);
+  background:rgba(7,15,30,.96);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;
+}
+.ni{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:10px 4px;cursor:pointer;transition:all .2s;
+}
+.ni-ic{font-size:1.3rem;transition:transform .2s;}
+.ni-lb{font-size:.6rem;font-weight:700;letter-spacing:.04em;color:var(--muted);transition:color .2s;text-transform:uppercase;}
+.ni.act .ni-lb{color:var(--cyan);}
+.ni.act .ni-ic{transform:scale(1.15);}
+.ni-dot{width:4px;height:4px;border-radius:50%;background:var(--cyan);opacity:0;transition:opacity .2s;margin-top:1px;}
+.ni.act .ni-dot{opacity:1;}
+
+/* ── SHARED COMPONENTS ── */
+.card{background:var(--sf);border:1px solid var(--border);border-radius:var(--r2);}
+.card:active{background:var(--sf2);}
+
+.pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 12px;border-radius:100px;font-size:.7rem;font-weight:700;letter-spacing:.06em;
+}
+.pill-cyan{background:rgba(6,205,244,.1);border:1px solid rgba(6,205,244,.2);color:var(--cyan);}
+.pill-green{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);color:var(--green);}
+.pill-gold{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);color:var(--gold);}
+.pill-red{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:var(--red);}
+.pill-purple{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);color:var(--purple);}
+.pulse{animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 10px;}
+.sec-title{font-weight:700;font-size:1rem;}
+.sec-more{font-size:.8rem;color:var(--cyan);cursor:pointer;}
+
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:14px 24px;border-radius:var(--r);font-weight:700;
+  font-family:'Outfit',sans-serif;cursor:pointer;border:none;
+  transition:all .2s;font-size:.92rem;
+}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:linear-gradient(135deg,var(--blue),var(--cyan));color:#fff;box-shadow:0 8px 24px rgba(26,110,245,.35);}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--sf);}
+.btn-red{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2);}
+.btn-full{width:100%;}
+
+.inp{
+  width:100%;padding:14px 16px;border-radius:var(--r);
+  background:var(--sf);border:1px solid var(--border);
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:.9rem;
+  outline:none;transition:border-color .2s;
+}
+.inp:focus{border-color:rgba(6,205,244,.4);}
+.inp::placeholder{color:var(--muted);}
+.inp-lbl{font-size:.72rem;font-weight:700;color:var(--t2);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;}
+
+.divider{height:1px;background:var(--border);margin:0 20px;}
+
+/* ── TOAST ── */
+#toast{
+  position:absolute;top:calc(var(--st) + 56px);left:16px;right:16px;
+  padding:13px 18px;border-radius:var(--r);
+  background:var(--green);color:#fff;font-weight:600;font-size:.88rem;
+  display:flex;align-items:center;gap:10px;z-index:999;
+  transform:translateY(-20px);opacity:0;pointer-events:none;
+  transition:all .35s cubic-bezier(.25,.46,.45,.94);
+}
+#toast.show{transform:none;opacity:1;}
+#toast.err{background:var(--red);}
+#toast.info{background:var(--blue);}
+
+/* ── MODAL ── */
+#modal-ov{
+  position:absolute;inset:0;background:rgba(0,0,0,.75);
+  backdrop-filter:blur(12px);z-index:500;
+  display:flex;align-items:flex-end;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+#modal-ov.show{opacity:1;pointer-events:all;}
+#modal-box{
+  width:100%;background:var(--bg1);border-radius:28px 28px 0 0;
+  padding:20px 20px calc(20px + var(--sb));
+  transform:translateY(100%);transition:transform .4s cubic-bezier(.25,.46,.45,.94);
+  max-height:90vh;overflow-y:auto;
+}
+#modal-ov.show #modal-box{transform:none;}
+.m-handle{width:40px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 20px;}
+.m-title{font-weight:800;font-size:1.1rem;margin-bottom:6px;}
+.m-sub{color:var(--t2);font-size:.85rem;margin-bottom:20px;}
+
+/* ════════════════════════════════
+   SCREEN: SPLASH
+════════════════════════════════ */
+#s-splash{background:var(--bg);justify-content:center;align-items:center;}
+.splash-logo{
+  font-weight:900;font-size:3.5rem;letter-spacing:.1em;
+  background:linear-gradient(135deg,#fff 0%,var(--cyan) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:logoIn .8s ease both;
+}
+@keyframes logoIn{from{opacity:0;transform:scale(.8);}to{opacity:1;transform:scale(1);}}
+.splash-sub{color:var(--t2);font-size:.85rem;letter-spacing:.25em;text-transform:uppercase;margin-top:8px;
+  animation:logoIn .8s .2s ease both;}
+.splash-bar{width:120px;height:2px;border-radius:1px;background:var(--border);margin-top:48px;overflow:hidden;
+  animation:logoIn .5s .5s ease both;}
+.splash-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:1px;animation:load 1.5s .6s ease both;width:0;}
+@keyframes load{to{width:100%;}}
+
+/* ════════════════════════════════
+   SCREEN: ONBOARDING
+════════════════════════════════ */
+#s-onboard{justify-content:flex-end;}
+.ob-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 90% 60% at 50% -10%,rgba(26,110,245,.18) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 90%,rgba(6,205,244,.1) 0%,transparent 50%),
+    radial-gradient(ellipse 50% 50% at 10% 80%,rgba(139,92,246,.08) 0%,transparent 50%);
+}
+.ob-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,black,transparent 70%);
+}
+.ob-content{position:relative;z-index:2;padding:40px 28px calc(40px + var(--sb));}
+.ob-badge{
+  display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:100px;
+  border:1px solid rgba(6,205,244,.25);background:rgba(6,205,244,.06);
+  font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--cyan);margin-bottom:24px;
+}
+.ob-badge span{width:5px;height:5px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite;}
+.ob-title{font-weight:900;font-size:3rem;line-height:1;letter-spacing:-.02em;margin-bottom:12px;}
+.ob-desc{color:var(--t2);font-size:.95rem;line-height:1.7;margin-bottom:32px;}
+.ob-stats{display:flex;gap:28px;margin-bottom:36px;}
+.ob-stat-num{font-weight:900;font-size:1.6rem;background:linear-gradient(135deg,#fff,var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.ob-stat-lbl{font-size:.68rem;color:var(--t2);text-transform:uppercase;letter-spacing:.08em;margin-top:2px;}
+
+/* ════════════════════════════════
+   SCREEN: LOGIN
+════════════════════════════════ */
+#s-login{justify-content:flex-end;}
+.login-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(26,110,245,.15) 0%,transparent 60%);
+}
+.login-top{flex:1;display:flex;align-items:center;justify-content:center;position:relative;}
+.login-hero-logo{font-weight:900;font-size:4rem;letter-spacing:.08em;
+  background:linear-gradient(135deg,#fff 30%,var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.login-form{position:relative;z-index:2;padding:32px 24px calc(32px + var(--sb));
+  background:var(--bg1);border-radius:28px 28px 0 0;border-top:1px solid var(--border);}
+.inp-wrap{position:relative;margin-bottom:14px;}
+.inp-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:1rem;pointer-events:none;}
+.inp-padded{padding-left:42px;}
+.inp-eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:1rem;color:var(--t2);}
+.login-forgot{text-align:right;margin-bottom:20px;margin-top:-6px;}
+.login-forgot a{color:var(--cyan);font-size:.82rem;cursor:pointer;}
+.login-sep{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--muted);font-size:.78rem;}
+.login-sep::before,.login-sep::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* ════════════════════════════════
+   SCREEN: HOME
+════════════════════════════════ */
+.home-hdr{padding:16px 20px 0;}
+.home-greet{color:var(--t2);font-size:.85rem;margin-bottom:2px;}
+.home-name{font-weight:800;font-size:1.2rem;}
+
+/* Balance Card */
+.bal-card{
+  margin:16px;border-radius:var(--r3);padding:24px;
+  background:linear-gradient(145deg,#0a2456 0%,#0c2f6e 40%,#0a3d5e 100%);
+  position:relative;overflow:hidden;cursor:pointer;
+}
+.bal-card::before{content:'';position:absolute;width:250px;height:250px;border-radius:50%;
+  top:-80px;right:-60px;background:rgba(6,205,244,.06);}
+.bal-card::after{content:'';position:absolute;width:180px;height:180px;border-radius:50%;
+  bottom:-60px;left:-40px;background:rgba(26,110,245,.08);}
+.bal-label{font-size:.72rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px;}
+.bal-amount{font-weight:900;font-size:2rem;color:#fff;margin-bottom:4px;position:relative;z-index:1;}
+.bal-usd{font-size:.82rem;color:rgba(255,255,255,.4);margin-bottom:20px;}
+.bal-actions{display:flex;gap:10px;position:relative;z-index:1;}
+.ba{
+  flex:1;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .2s;
+}
+.ba:active{background:rgba(255,255,255,.18);}
+.ba-ic{font-size:1.1rem;margin-bottom:3px;}
+.ba-lb{font-size:.68rem;color:rgba(255,255,255,.7);font-weight:600;}
+
+/* Quick grid */
+.qg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:0 16px;}
+.qi{
+  display:flex;flex-direction:column;align-items:center;gap:7px;
+  padding:14px 6px;border-radius:var(--r);background:var(--sf);
+  border:1px solid var(--border);cursor:pointer;transition:all .2s;
+}
+.qi:active{background:var(--sf2);transform:scale(.95);}
+.qi-ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;}
+.qi-lb{font-size:.62rem;font-weight:700;color:var(--t2);text-align:center;line-height:1.3;}
+
+/* Promo banner */
+.promo{
+  margin:14px 16px;border-radius:var(--r2);padding:18px;
+  display:flex;align-items:center;gap:14px;cursor:pointer;
+  border:1px solid;transition:all .2s;
+}
+.promo:active{opacity:.85;}
+.promo-txt{flex:1;}
+.promo-title{font-weight:700;font-size:.92rem;margin-bottom:3px;}
+.promo-sub{font-size:.78rem;color:var(--t2);line-height:1.4;}
+.promo-ic{font-size:2rem;flex-shrink:0;}
+
+/* Transaction list */
+.txn{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 20px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;
+}
+.txn:active{background:var(--sf);}
+.txn-ic{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.txn-info{flex:1;}
+.txn-nm{font-weight:600;font-size:.9rem;margin-bottom:2px;}
+.txn-dt{font-size:.73rem;color:var(--t2);}
+.txn-am{font-weight:800;font-size:.9rem;}
+.txn-am.p{color:var(--green);}
+.txn-am.m{color:var(--text);}
+
+/* Phase banner */
+.phase-banner{
+  margin:0 16px 16px;border-radius:var(--r2);padding:18px;
+  background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(6,205,244,.08));
+  border:1px solid rgba(139,92,246,.2);
+}
+.pb-phase{font-size:.68rem;font-weight:700;color:var(--purple);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;}
+.pb-title{font-weight:800;font-size:.95rem;margin-bottom:4px;}
+.pb-sub{font-size:.78rem;color:var(--t2);line-height:1.5;}
+.pb-bar{margin-top:12px;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.pb-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--purple),var(--cyan));}
+
+/* ════════════════════════════════
+   SCREEN: WALLET
+════════════════════════════════ */
+.wcard{
+  border-radius:var(--r2);padding:22px;position:relative;overflow:hidden;cursor:pointer;margin-bottom:12px;
+}
+.wcard::after{content:'';position:absolute;width:200px;height:200px;border-radius:50%;top:-60px;right:-60px;background:rgba(255,255,255,.04);}
+.wcard-chip{width:30px;height:22px;border-radius:4px;background:rgba(255,255,255,.18);margin-bottom:18px;}
+.wcard-num{font-family:'JetBrains Mono',monospace;letter-spacing:.2em;font-size:.82rem;color:rgba(255,255,255,.6);margin-bottom:14px;}
+.wcard-footer{display:flex;justify-content:space-between;align-items:flex-end;}
+.wcard-holder{font-size:.7rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;}
+.wcard-bal{font-weight:800;font-size:1rem;color:#fff;}
+.wcard-logo{position:absolute;top:18px;right:18px;font-size:1.4rem;opacity:.5;}
+.wcard-type{position:absolute;top:18px;left:18px;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);font-weight:700;}
+
+.wac-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px 16px;}
+.wac{
+  padding:14px 8px;border-radius:var(--r);background:var(--sf);border:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:all .2s;
+}
+.wac:active{background:var(--sf2);transform:scale(.96);}
+.wac-ic{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+.wac-lb{font-size:.68rem;font-weight:700;color:var(--t2);}
+
+.stat-row{display:flex;gap:10px;padding:0 16px 16px;}
+.stat-box{flex:1;background:var(--sf);border:1px solid var(--border);border-radius:var(--r);padding:14px;}
+.stat-lb{font-size:.68rem;color:var(--t2);margin-bottom:4px;}
+.stat-val{font-weight:800;font-size:1.05rem;}
+
+/* ════════════════════════════════
+   SCREEN: GOVTECH
+════════════════════════════════ */
+.did-card{
+  margin:16px;border-radius:var(--r2);padding:22px;
+  background:linear-gradient(145deg,#0a2456,#064e73);
+  position:relative;overflow:hidden;
+}
+.did-card::before{content:'DIGITAL ID';position:absolute;bottom:14px;right:16px;
+  font-size:.5rem;letter-spacing:.25em;color:rgba(255,255,255,.12);font-weight:900;}
+.did-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+.did-flag{font-size:1.4rem;}
+.did-verified{display:flex;align-items:center;gap:5px;font-size:.7rem;
+  background:rgba(16,185,129,.15);color:var(--green);padding:4px 10px;border-radius:100px;font-weight:600;}
+.did-av{width:52px;height:52px;border-radius:12px;background:rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:10px;}
+.did-name{font-weight:800;font-size:1rem;color:#fff;margin-bottom:2px;}
+.did-id{font-size:.7rem;color:rgba(255,255,255,.4);font-family:'JetBrains Mono',monospace;letter-spacing:.08em;}
+.did-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+.did-fl{font-size:.62rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px;}
+.did-fv{font-size:.82rem;color:rgba(255,255,255,.8);font-weight:600;}
+
+.gov-search{
+  margin:0 16px 16px;padding:13px 16px;border-radius:var(--r);
+  background:var(--sf);border:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;color:var(--t2);font-size:.88rem;cursor:pointer;
+}
+.gov-cats{padding:0 16px;display:flex;gap:8px;overflow-x:auto;margin-bottom:4px;}
+.gov-cat{
+  white-space:nowrap;padding:7px 14px;border-radius:100px;font-size:.72rem;font-weight:700;
+  background:var(--sf);border:1px solid var(--border);color:var(--t2);cursor:pointer;transition:all .2s;
+}
+.gov-cat.act{background:rgba(6,205,244,.1);border-color:rgba(6,205,244,.3);color:var(--cyan);}
+.gov-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px;}
+.gov-card{
+  background:var(--sf);border:1px solid var(--border);border-radius:var(--r2);
+  padding:16px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;
+}
+.gov-card:active{background:var(--sf2);transform:scale(.97);}
+.gov-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent-clr,var(--blue));opacity:0;transition:opacity .2s;}
+.gov-card:active::before{opacity:1;}
+.gov-ic{font-size:1.7rem;margin-bottom:10px;}
+.gov-title{font-weight:700;font-size:.84rem;margin-bottom:4px;}
+.gov-sub{font-size:.7rem;color:var(--t2);line-height:1.4;}
+.gov-badge{position:absolute;top:10px;right:10px;font-size:.58rem;padding:2px 7px;border-radius:100px;font-weight:800;letter-spacing:.06em;}
+.tax-sum{
+  margin:16px;border-radius:var(--r2);padding:20px;
+  background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(6,205,244,.07));
+  border:1px solid rgba(16,185,129,.15);
+}
+.tax-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border);}
+.tax-row:last-child{border:none;}
+.tax-lb{font-size:.83rem;color:var(--t2);}
+.tax-vl{font-weight:800;font-size:.9rem;}
+
+/* ════════════════════════════════
+   SCREEN: EDTECH
+════════════════════════════════ */
+.learn-hero{
+  margin:16px;border-radius:var(--r2);padding:20px;
+  background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(249,115,22,.08));
+  border:1px solid rgba(245,158,11,.15);
+}
+.lh-tag{font-size:.68rem;font-weight:700;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+.lh-title{font-weight:800;font-size:.95rem;margin-bottom:4px;}
+.lh-sub{font-size:.78rem;color:var(--t2);margin-bottom:12px;}
+.prog{height:6px;border-radius:3px;background:var(--border);overflow:hidden;margin-bottom:5px;}
+.prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold),#f97316);}
+.prog-lb{font-size:.7rem;color:var(--t2);}
+
+.crs{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 20px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;
+}
+.crs:active{background:var(--sf);}
+.crs-thumb{width:58px;height:58px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;}
+.crs-title{font-weight:700;font-size:.9rem;margin-bottom:3px;}
+.crs-meta{font-size:.73rem;color:var(--t2);margin-bottom:5px;}
+.crs-tags{display:flex;gap:6px;}
+.crs-tag{font-size:.62rem;padding:2px 8px;border-radius:100px;border:1px solid var(--border);color:var(--t2);}
+
+/* ════════════════════════════════
+   SCREEN: PROFILE
+════════════════════════════════ */
+.prof-hero{padding:24px 20px 18px;text-align:center;}
+.prof-av{
+  width:72px;height:72px;border-radius:20px;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:2rem;color:#fff;margin:0 auto 12px;
+}
+.prof-name{font-weight:800;font-size:1.15rem;margin-bottom:2px;}
+.prof-email{font-size:.82rem;color:var(--t2);margin-bottom:12px;}
+.prof-pro{
+  display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:100px;
+  background:rgba(26,110,245,.12);border:1px solid rgba(6,205,244,.2);
+  font-size:.68rem;font-weight:800;color:var(--cyan);letter-spacing:.1em;
+}
+.mn-grp{margin:0 16px 8px;border-radius:var(--r);background:var(--sf);border:1px solid var(--border);overflow:hidden;}
+.mn-row{
+  display:flex;align-items:center;gap:12px;padding:14px 16px;
+  border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;
+}
+.mn-row:last-child{border:none;}
+.mn-row:active{background:var(--sf2);}
+.mn-ic{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;}
+.mn-txt{flex:1;font-size:.87rem;font-weight:500;}
+.mn-val{font-size:.78rem;color:var(--t2);}
+.mn-arr{font-size:.75rem;color:var(--muted);}
+.toggle{width:44px;height:26px;border-radius:13px;background:var(--muted);position:relative;cursor:pointer;transition:background .25s;flex-shrink:0;}
+.toggle.on{background:var(--blue);}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .25s;box-shadow:0 2px 4px rgba(0,0,0,.3);}
+.toggle.on::after{transform:translateX(18px);}
+
+/* ════════════════════════════════
+   SCREEN: ROADMAP
+════════════════════════════════ */
+.rm-phase{
+  margin:0 16px 14px;border-radius:var(--r2);overflow:hidden;
+  border:1px solid var(--border);
+}
+.rm-phase-hdr{
+  padding:18px 20px;display:flex;align-items:center;gap:14px;cursor:pointer;
+  transition:background .2s;
+}
+.rm-phase-hdr:active{background:var(--sf2);}
+.rm-phase-num{
+  width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:.9rem;flex-shrink:0;
+}
+.rm-phase-info{flex:1;}
+.rm-phase-period{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px;}
+.rm-phase-title{font-weight:800;font-size:.95rem;}
+.rm-phase-status{font-size:.68rem;padding:3px 10px;border-radius:100px;font-weight:700;}
+.rm-items{padding:0 20px 18px;display:flex;flex-direction:column;gap:8px;}
+.rm-item{display:flex;align-items:center;gap:10px;font-size:.82rem;}
+.rm-item-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.rm-item-txt{color:var(--t2);}
+
+/* ════════════════════════════════
+   SCREEN: AI CORE
+════════════════════════════════ */
+.ai-hero{
+  margin:16px;border-radius:var(--r2);padding:22px;text-align:center;
+  background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(26,110,245,.1));
+  border:1px solid rgba(139,92,246,.2);position:relative;overflow:hidden;
+}
+.ai-pulse{
+  width:80px;height:80px;border-radius:50%;
+  background:radial-gradient(circle,rgba(139,92,246,.4),rgba(6,205,244,.2));
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 16px;font-size:2rem;
+  animation:aiPulse 2s infinite;
+}
+@keyframes aiPulse{0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,.4);}50%{box-shadow:0 0 0 16px rgba(139,92,246,0);}}
+.ai-title{font-weight:900;font-size:1.2rem;margin-bottom:6px;}
+.ai-sub{font-size:.82rem;color:var(--t2);line-height:1.6;}
+.ai-cap{
+  display:flex;align-items:flex-start;gap:14px;padding:16px 20px;
+  border-bottom:1px solid var(--border);
+}
+.ai-cap-ic{font-size:1.4rem;flex-shrink:0;margin-top:2px;}
+.ai-cap-title{font-weight:700;font-size:.88rem;margin-bottom:3px;}
+.ai-cap-desc{font-size:.78rem;color:var(--t2);line-height:1.5;}
+
+/* ════════════════════════════════
+   NUMPAD MODAL
+════════════════════════════════ */
+.amt-display{
+  text-align:center;padding:24px 20px 8px;
+  font-weight:900;font-size:2.4rem;color:var(--cyan);
+  font-family:'JetBrains Mono',monospace;
+}
+.amt-cur{font-size:1rem;color:var(--t2);}
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:8px 20px;}
+.np-btn{
+  padding:16px;border-radius:var(--r);background:var(--sf);border:1px solid var(--border);
+  font-weight:700;font-size:1.1rem;text-align:center;cursor:pointer;transition:all .15s;
+}
+.np-btn:active{background:rgba(6,205,244,.15);transform:scale(.94);}
+
+/* ════════════════════════════════
+   SCREEN: GLOBAL SERVICES
+════════════════════════════════ */
+.gs-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 16px;}
+.gs-card{
+  background:var(--sf);border:1px solid var(--border);border-radius:var(--r2);
+  padding:18px;cursor:pointer;transition:all .2s;
+}
+.gs-card:active{background:var(--sf2);transform:scale(.97);}
+.gs-ic{font-size:2rem;margin-bottom:10px;}
+.gs-title{font-weight:700;font-size:.85rem;margin-bottom:3px;}
+.gs-sub{font-size:.72rem;color:var(--t2);line-height:1.4;}
+
+/* ════════════════════════════════
+   ANIMATIONS
+════════════════════════════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.fu{animation:fadeUp .5s ease both;}
+.fu1{animation-delay:.05s;}
+.fu2{animation-delay:.1s;}
+.fu3{animation-delay:.15s;}
+.fu4{animation-delay:.2s;}
+.fu5{animation-delay:.25s;}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ════ SPLASH ════ -->
+<div class="scr show" id="s-splash">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+    <div class="splash-logo">ALTHERA</div>
+    <div class="splash-sub">Super Platforma</div>
+    <div class="splash-bar"><div class="splash-fill"></div></div>
+  </div>
+  <div style="padding-bottom:calc(32px + var(--sb));text-align:center;color:var(--muted);font-size:.72rem;letter-spacing:.1em;">
+    v1.0.0 MVP · © 2026 Allamurotov Azimbek
+  </div>
+</div>
+
+<!-- ════ ONBOARDING ════ -->
+<div class="scr hide" id="s-onboard">
+  <div class="ob-bg"></div>
+  <div class="ob-grid"></div>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;padding-top:calc(var(--st)+20px);">
+    <div style="text-align:center;padding:0 40px;">
+      <div style="font-size:4rem;margin-bottom:16px;">🌐</div>
+      <div style="font-weight:900;font-size:2.2rem;line-height:1.1;letter-spacing:-.02em;margin-bottom:12px;">
+        <span class="grad">32 Platforma</span><br>Bitta Ilova
+      </div>
+      <div style="color:var(--t2);font-size:.9rem;line-height:1.7;">
+        Fintech, GovTech, EdTech va Global Servislar — O'zbekiston va dunyo uchun yagona raqamli ekotizim
+      </div>
+    </div>
+  </div>
+  <div class="ob-content">
+    <div class="ob-stats">
+      <div><div class="ob-stat-num">32</div><div class="ob-stat-lbl">Platforma</div></div>
+      <div><div class="ob-stat-num">6K+</div><div class="ob-stat-lbl">Xizmat</div></div>
+      <div><div class="ob-stat-num">36M+</div><div class="ob-stat-lbl">Bozor</div></div>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="go('s-login')">Boshlash →</button>
+    <div style="text-align:center;margin-top:14px;color:var(--t2);font-size:.8rem;">
+      Demo versiya · Barcha ma'lumotlar xayoliy
+    </div>
+  </div>
+</div>
+
+<!-- ════ LOGIN ════ -->
+<div class="scr hide" id="s-login">
+  <div class="login-bg"></div>
+  <div class="login-top">
+    <div style="text-align:center;">
+      <div class="login-hero-logo">ALTHERA</div>
+      <div style="color:var(--t2);font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;margin-top:6px;">Super Platforma</div>
+    </div>
+  </div>
+  <div class="login-form">
+    <div style="font-weight:800;font-size:1.3rem;margin-bottom:4px;">Kirish</div>
+    <div style="color:var(--t2);font-size:.85rem;margin-bottom:22px;">Hisobingizga kiring</div>
+    <div class="inp-wrap">
+      <div class="inp-icon">📱</div>
+      <input class="inp inp-padded" type="tel" placeholder="+998 XX XXX XX XX" id="l-phone">
+    </div>
+    <div class="inp-wrap" style="position:relative;">
+      <div class="inp-icon">🔒</div>
+      <input class="inp inp-padded" type="password" placeholder="Parol" id="l-pass" style="padding-right:44px;">
+      <div class="inp-eye" onclick="togglePw()">👁</div>
+    </div>
+    <div class="login-forgot"><a onclick="toast('Parol tiklash SMS yuborildi','info')">Parolni unutdingizmi?</a></div>
+    <button class="btn btn-primary btn-full" onclick="doLogin()">Kirish →</button>
+    <div class="login-sep">yoki</div>
+    <button class="btn btn-ghost btn-full" onclick="doLogin()" style="margin-bottom:10px;">🔑 &nbsp;Face ID / Touch ID</button>
+    <button class="btn btn-ghost btn-full" onclick="go('s-onboard')" style="color:var(--t2);font-size:.82rem;padding:12px;">← Orqaga</button>
+  </div>
+</div>
+
+<!-- ════ MAIN APP ════ -->
+<div class="scr hide up" id="s-main">
+  <div class="sb">
+    <div class="sb-logo">ALTHERA</div>
+    <div class="sb-r">
+      <div class="sb-notif pulse"></div>
+      <span id="clk" class="mono">--:--</span>
+    </div>
+  </div>
+
+  <!-- HOME TAB -->
+  <div class="sa" id="t-home">
+    <div class="home-hdr fu">
+      <div class="home-greet">Assalomu alaykum 👋</div>
+      <div class="home-name">Azimbek Allamurotov</div>
+    </div>
+
+    <div class="bal-card fu fu1" onclick="openNumpad('send')">
+      <div class="bal-label">Umumiy Balans</div>
+      <div class="bal-amount">12 500 000 <span style="font-size:1rem;opacity:.5">UZS</span></div>
+      <div class="bal-usd">≈ $980.00 USD · Bugun yangilangan</div>
+      <div class="bal-actions">
+        <div class="ba" onclick="event.stopPropagation();openNumpad('send')"><div class="ba-ic">↑</div><div class="ba-lb">Yuborish</div></div>
+        <div class="ba" onclick="event.stopPropagation();openNumpad('receive')"><div class="ba-ic">↓</div><div class="ba-lb">Qabul</div></div>
+        <div class="ba" onclick="event.stopPropagation();openNumpad('topup')"><div class="ba-ic">＋</div><div class="ba-lb">To'ldirish</div></div>
+        <div class="ba" onclick="event.stopPropagation();toast('QR kod tayyor!','info')"><div class="ba-ic">▦</div><div class="ba-lb">QR Kod</div></div>
+      </div>
+    </div>
+
+    <div class="stat-row fu fu2">
+      <div class="stat-box"><div class="stat-lb">Bugungi kirim</div><div class="stat-val" style="color:var(--green)">+5 200 000</div></div>
+      <div class="stat-box"><div class="stat-lb">Bugungi chiqim</div><div class="stat-val" style="color:var(--red)">−495 500</div></div>
+      <div class="stat-box"><div class="stat-lb">Keshbek</div><div class="stat-val" style="color:var(--gold)">+24 000</div></div>
+    </div>
+
+    <div class="sec-hdr fu fu3"><div class="sec-title">Tezkor Xizmatlar</div><div class="sec-more" onclick="switchTab('global')">Barchasi →</div></div>
+    <div class="qg fu fu3">
+      <div class="qi" onclick="switchTab('wallet')"><div class="qi-ic" style="background:rgba(26,110,245,.15)">💳</div><div class="qi-lb">To'lov</div></div>
+      <div class="qi" onclick="switchTab('gov')"><div class="qi-ic" style="background:rgba(16,185,129,.15)">🏛️</div><div class="qi-lb">E-Gov</div></div>
+      <div class="qi" onclick="go('s-tax')"><div class="qi-ic" style="background:rgba(245,158,11,.15)">📊</div><div class="qi-lb">Soliq</div></div>
+      <div class="qi" onclick="switchTab('learn')"><div class="qi-ic" style="background:rgba(139,92,246,.15)">🎓</div><div class="qi-lb">Ta'lim</div></div>
+      <div class="qi" onclick="toast('Telemeditsina tez kunda!','info')"><div class="qi-ic" style="background:rgba(239,68,68,.15)">🏥</div><div class="qi-lb">Tibbiyot</div></div>
+      <div class="qi" onclick="toast('Sug\'urta xizmati faol!','info')"><div class="qi-ic" style="background:rgba(6,205,244,.15)">🛡️</div><div class="qi-lb">Sug'urta</div></div>
+      <div class="qi" onclick="toast('Logistika moduli yuklanmoqda...','info')"><div class="qi-ic" style="background:rgba(249,115,22,.15)">📦</div><div class="qi-lb">Logistika</div></div>
+      <div class="qi" onclick="toast('Crypto moduli MVP2 da!','info')"><div class="qi-ic" style="background:rgba(245,158,11,.15)">₿</div><div class="qi-lb">Crypto</div></div>
+    </div>
+
+    <div class="promo fu fu4" style="background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.2);" onclick="go('s-ai')">
+      <div class="promo-txt"><div class="promo-title">ALTHERA AI Core ✦</div><div class="promo-sub">Aqlli orkestratsiya — barcha modullar sinxron</div></div>
+      <div class="promo-ic">🤖</div>
+    </div>
+
+    <div class="promo fu fu4" style="background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.15);" onclick="switchTab('gov')">
+      <div class="promo-txt"><div class="promo-title">Digital ID faol ✓</div><div class="promo-sub">Raqamli pasportingiz tasdiqlangan</div></div>
+      <div class="promo-ic">🪪</div>
+    </div>
+
+    <div class="phase-banner fu fu5">
+      <div class="pb-phase">📍 Hozirgi Bosqich · MVP (0–6 oy)</div>
+      <div class="pb-title">Wallet, SSO & Digital ID, Tax Hub</div>
+      <div class="pb-sub">24 oylik roadmapning 1-bosqichi. Beta fazasi 6 oydan keyin boshlanadi.</div>
+      <div class="pb-bar"><div class="pb-fill" style="width:18%"></div></div>
+      <div style="margin-top:6px;font-size:.7rem;color:var(--t2);">18% bajarildi</div>
+    </div>
+
+    <div class="sec-hdr"><div class="sec-title">So'nggi Tranzaksiyalar</div><div class="sec-more" onclick="switchTab('wallet')">Barchasi →</div></div>
+    <div class="txn"><div class="txn-ic" style="background:rgba(16,185,129,.12)">💰</div><div class="txn-info"><div class="txn-nm">Ish haqi</div><div class="txn-dt">Bugun, 09:00 · Uzcard</div></div><div class="txn-am p">+5 200 000</div></div>
+    <div class="txn"><div class="txn-ic" style="background:rgba(239,68,68,.12)">🛒</div><div class="txn-info"><div class="txn-nm">Korzinka Market</div><div class="txn-dt">Kecha, 18:30 · NFC</div></div><div class="txn-am m">−156 000</div></div>
+    <div class="txn"><div class="txn-ic" style="background:rgba(6,205,244,.12)">💡</div><div class="txn-info"><div class="txn-nm">Elektr to'lovi</div><div class="txn-dt">23 apr · E-Gov</div></div><div class="txn-am m">−89 500</div></div>
+    <div class="txn"><div class="txn-ic" style="background:rgba(245,158,11,.12)">📚</div><div class="txn-info"><div class="txn-nm">Online kurs</div><div class="txn-dt">22 apr · ALTHERA EdTech</div></div><div class="txn-am m">−250 000</div></div>
+    <div class="txn"><div class="txn-ic" style="background:rgba(139,92,246,.12)">↔️</div><div class="txn-info"><div class="txn-nm">P2P — Jasur</div><div class="txn-dt">21 apr · ALTHERA Pay</div></div><div class="txn-am p">+300 000</div></div>
+    <div class="txn"><div class="txn-ic" style="background:rgba(16,185,129,.12)">📊</div><div class="txn-info"><div class="txn-nm">Soliq keshbeki</div><div class="txn-dt">20 apr · Tax Hub</div></div><div class="txn-am p">+480 000</div></div>
+  </div>
+
+  <!-- WALLET TAB -->
+  <div class="sa" id="t-wallet" style="display:none">
+    <div class="sec-hdr" style="padding-top:16px"><div class="sec-title">Kartalarim</div><div class="sec-more" onclick="toast('Yangi karta qo\'shilmoqda...','info')">＋ Qo'shish</div></div>
+    <div style="padding:0 16px">
+      <div class="wcard" style="background:linear-gradient(145deg,#0a2456,#0c2f6e)" onclick="toast('Uzcard tanlandi','info')">
+        <div class="wcard-type">ALTHERA PAY</div>
+        <div class="wcard-logo">🇺🇿</div>
+        <div class="wcard-chip"></div>
+        <div class="wcard-num">8600 •••• •••• 4821</div>
+        <div class="wcard-footer"><div><div class="wcard-holder">Azimbek A.</div><div style="font-size:.62rem;color:rgba(255,255,255,.35);margin-top:2px">12/27</div></div><div class="wcard-bal">12 500 000 UZS</div></div>
+      </div>
+      <div class="wcard" style="background:linear-gradient(145deg,#064e3b,#065f46)" onclick="toast('Visa karta tanlandi','info')">
+        <div class="wcard-type">VISA GLOBAL</div>
+        <div class="wcard-logo">💳</div>
+        <div class="wcard-chip"></div>
+        <div class="wcard-num">4276 •••• •••• 9913</div>
+        <div class="wcard-footer"><div><div class="wcard-holder">Azimbek A.</div><div style="font-size:.62rem;color:rgba(255,255,255,.35);margin-top:2px">09/26</div></div><div class="wcard-bal">$980.00 USD</div></div>
+      </div>
+      <div class="wcard" style="background:linear-gradient(145deg,#3b0764,#4c1d95)" onclick="toast('Crypto hamyon ochildi','info')">
+        <div class="wcard-type">CRYPTO WALLET</div>
+        <div class="wcard-logo">₿</div>
+        <div class="wcard-chip"></div>
+        <div class="wcard-num">0x3f••••••••••4a9b</div>
+        <div class="wcard-footer"><div><div class="wcard-holder">USDT · BTC · ETH</div></div><div class="wcard-bal">$125.40</div></div>
+      </div>
+    </div>
+
+    <div class="wac-grid">
+      <div class="wac" onclick="openNumpad('send')"><div class="wac-ic" style="background:rgba(26,110,245,.15)">↑</div><div class="wac-lb">Yuborish</div></div>
+      <div class="wac" onclick="openNumpad('receive')"><div class="wac-ic" style="background:rgba(16,185,129,.15)">↓</div><div class="wac-lb">Qabul</div></div>
+      <div class="wac" onclick="openNumpad('topup')"><div class="wac-ic" style="background:rgba(245,158,11,.15)">＋</div><div class="wac-lb">To'ldirish</div></div>
+      <div class="wac" onclick="toast('NFC to\'lov tayyor!','info')"><div class="wac-ic" style="background:rgba(6,205,244,.15)">📡</div><div class="wac-lb">NFC</div></div>
+      <div class="wac" onclick="toast('QR skaner ochildi!','info')"><div class="wac-ic" style="background:rgba(139,92,246,.15)">▦</div><div class="wac-lb">QR Scan</div></div>
+      <div class="wac" onclick="toast('Konvertatsiya: 1 USD = 12 740 UZS','info')"><div class="wac-ic" style="background:rgba(249,115,22,.15)">💱</div><div class="wac-lb">Valyuta</div></div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-box"><div class="stat-lb">Bugungi kirim</div><div class="stat-val" style="color:var(--green)">+5 500 000</div></div>
+      <div class="stat-box"><div class="stat-lb">Bugungi chiqim</div><div class="stat-val" style="color:var(--red)">−495 500</div></div>
+    </div>
+
+    <div class="sec-hdr"><div class="sec-title">Tranzaksiyalar</div><div class="sec-more">Filtr →</div></div>
+    <div class="txn"><div class="txn-ic" style="background:rgba(16,185,129,.12)">💰</div><div class="txn-info"><div class="txn-nm">Ish haqi</div><div class="txn-dt">Bugun, 09:00</div></div><div class="txn-am p">+5 200 000</div></div>
+    <div class="txn"><div class="txn-ic" style="background:rgba(239,68,68,.12)">🛒</div><div class="txn-info"><div class="txn-nm">Korzinka Market</div><div class="txn-dt">Kecha, 18:30</div></div><div class="txn-am m">−156 000</div></div>
+    <div class="txn"><div class="txn-ic" style="background:rgba(6,205,244,.12)">💡</div><div class="txn-info"><div class="txn-nm">Elektr to'lovi</div><div class="txn-dt">23 apr, 14:00</div></div><div class="txn-am m">−89 500</div></div>
+    <div class="txn"><div class="txn-ic" style="background:rgba(139,92,246,.12)">↔️</div><div class="txn-info"><div class="txn-nm">P2P Transfer — Jasur</div><div class="txn-dt">21 apr, 20:00</div></div><div class="txn-am p">+300 000</div></div>
+  </div>
+
+  <!-- GOV TAB -->
+  <div class="sa" id="t-gov" style="display:none">
+    <div class="did-card">
+      <div class="did-hdr"><div class="did-flag">🇺🇿</div><div class="did-verified">✓ Tasdiqlangan</div></div>
+      <div class="did-av">👤</div>
+      <div class="did-name">ALLAMUROTOV AZIMBEK</div>
+      <div class="did-id">ID: UZ-2026-0412-8847 · PINFL: ••••••••••••••</div>
+      <div class="did-fields">
+        <div><div class="did-fl">Tug'ilgan kun</div><div class="did-fv">01.01.1995</div></div>
+        <div><div class="did-fl">Jinsi</div><div class="did-fv">Erkak</div></div>
+        <div><div class="did-fl">Manzil</div><div class="did-fv">Toshkent, O'zbekiston</div></div>
+        <div><div class="did-fl">KYC Holat</div><div class="did-fv" style="color:var(--green)">✓ Tasdiqlangan</div></div>
+      </div>
+    </div>
+
+    <div class="gov-search" onclick="toast('600+ davlat xizmati qidirilmoqda...','info')">
+      <span>🔍</span><span>600+ xizmatni qidiring...</span>
+    </div>
+
+    <div class="gov-cats">
+      <div class="gov-cat act">Barchasi</div>
+      <div class="gov-cat">Soliq</div>
+      <div class="gov-cat">Hujjatlar</div>
+      <div class="gov-cat">To'lovlar</div>
+      <div class="gov-cat">Tenderlar</div>
+      <div class="gov-cat">Vazirlik</div>
+    </div>
+
+    <div class="gov-grid">
+      <div class="gov-card" style="--accent-clr:var(--green)" onclick="go('s-tax')">
+        <div class="gov-badge pill pill-green">FAOL</div>
+        <div class="gov-ic">📊</div>
+        <div class="gov-title">Soliq Hub</div>
+        <div class="gov-sub">Deklaratsiya, to'lov, keshbek va monitoring</div>
+      </div>
+      <div class="gov-card" onclick="toast('Hujjatlar ombori ochildi!')">
+        <div class="gov-badge pill pill-cyan">YANGI</div>
+        <div class="gov-ic">📄</div>
+        <div class="gov-title">Hujjatlar</div>
+        <div class="gov-sub">Pasport, guvohnoma va hujjatlar arxivi</div>
+      </div>
+      <div class="gov-card" onclick="openNumpad('communal')">
+        <div class="gov-ic">💡</div>
+        <div class="gov-title">Kommunal</div>
+        <div class="gov-sub">Elektr, gaz, suv, internet to'lovlari</div>
+      </div>
+      <div class="gov-card" onclick="toast('E-Tender moduli Beta da bo\'ladi!','info')">
+        <div class="gov-badge pill pill-gold">BETA</div>
+        <div class="gov-ic">📋</div>
+        <div class="gov-title">E-Tender</div>
+        <div class="gov-sub">Davlat tenderlariga ariza va monitoring</div>
+      </div>
+      <div class="gov-card" onclick="toast('Yuridik AI yordamchi faol!','info')">
+        <div class="gov-ic">⚖️</div>
+        <div class="gov-title">Yuridik</div>
+        <div class="gov-sub">AI shartnoma tahlili va maslahat</div>
+      </div>
+      <div class="gov-card" onclick="toast('Ministry Portal: Diplomatik kanal — tez kunda!','info')">
+        <div class="gov-badge pill pill-purple">B2G</div>
+        <div class="gov-ic">🏢</div>
+        <div class="gov-title">Vazirlik</div>
+        <div class="gov-sub">Rasmiy murojaat va diplomatik aloqa</div>
+      </div>
+      <div class="gov-card" onclick="toast('E-Gov: 200+ xizmat Beta da!','info')">
+        <div class="gov-ic">🏛️</div>
+        <div class="gov-title">E-Gov</div>
+        <div class="gov-sub">600+ davlat xizmatiga onlayn kirish</div>
+      </div>
+      <div class="gov-card" onclick="toast('Sog\'liq xizmati: tez kunda!','info')">
+        <div class="gov-ic">🏥</div>
+        <div class="gov-title">Sog'liqni saqlash</div>
+        <div class="gov-sub">Telemeditsina va elektron kartalar</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEARN TAB -->
+  <div class="sa" id="t-learn" style="display:none">
+    <div class="learn-hero fu" style="margin-top:16px">
+      <div class="lh-tag">🎓 Sizning o'quv yo'lingiz</div>
+      <div class="lh-title">Moliyaviy Savodxonlik Kursi</div>
+      <div class="lh-sub">3/10 dars bajarildi · 7 dars qoldi</div>
+      <div class="prog"><div class="prog-fill" style="width:30%"></div></div>
+      <div class="prog-lb">30% — Davom etish uchun bosing</div>
+    </div>
+
+    <div class="sec-hdr fu fu1"><div class="sec-title">Mashhur Kurslar</div><div class="sec-more" onclick="toast('Barcha kurslar: 200+','info')">Barchasi →</div></div>
+    <div class="crs fu fu1" onclick="toast('Kurs boshlandi: Moliyaviy Savodxonlik ✓')">
+      <div class="crs-thumb" style="background:rgba(245,158,11,.12)">💰</div>
+      <div><div class="crs-title">Moliyaviy Savodxonlik</div><div class="crs-meta">⭐ 4.9 · 12 400 talaba · 10 dars</div><div class="crs-tags"><span class="crs-tag">Boshlang'ich</span><span class="crs-tag">Bepul</span></div></div>
+    </div>
+    <div class="crs fu fu2" onclick="toast('Kurs boshlandi: AI va Texnologiyalar ✓')">
+      <div class="crs-thumb" style="background:rgba(26,110,245,.12)">🤖</div>
+      <div><div class="crs-title">AI va Texnologiyalar</div><div class="crs-meta">⭐ 4.8 · 8 200 talaba · 15 dars</div><div class="crs-tags"><span class="crs-tag">O'rta</span><span class="crs-tag">Premium</span></div></div>
+    </div>
+    <div class="crs fu fu3" onclick="toast('Kurs boshlandi: Biznes va Startap ✓')">
+      <div class="crs-thumb" style="background:rgba(16,185,129,.12)">📈</div>
+      <div><div class="crs-title">Biznes va Startap</div><div class="crs-meta">⭐ 4.7 · 5 600 talaba · 8 dars</div><div class="crs-tags"><span class="crs-tag">Ilg'or</span><span class="crs-tag">Sertifikat</span></div></div>
+    </div>
+    <div class="crs fu fu4" onclick="toast('Kurs boshlandi: Dasturlash Asoslari ✓')">
+      <div class="crs-thumb" style="background:rgba(139,92,246,.12)">💻</div>
+      <div><div class="crs-title">Dasturlash Asoslari</div><div class="crs-meta">⭐ 4.9 · 15 000 talaba · 20 dars</div><div class="crs-tags"><span class="crs-tag">Boshlang'ich</span><span class="crs-tag">Bepul</span></div></div>
+    </div>
+    <div class="crs" onclick="toast('Kurs boshlandi: Huquq va Compliance ✓')">
+      <div class="crs-thumb" style="background:rgba(239,68,68,.12)">⚖️</div>
+      <div><div class="crs-title">Huquq va Compliance</div><div class="crs-meta">⭐ 4.6 · 3 400 talaba · 12 dars</div><div class="crs-tags"><span class="crs-tag">O'rta</span><span class="crs-tag">Sertifikat</span></div></div>
+    </div>
+
+    <div class="sec-hdr"><div class="sec-title">Ish O'rinlari</div><div class="sec-more" onclick="toast('Job Portal: 500+ vakansiya','info')">Barchasi →</div></div>
+    <div class="txn" onclick="toast('Ariza yuborildi: Frontend Developer ✓')"><div class="txn-ic" style="background:rgba(26,110,245,.12)">💼</div><div class="txn-info"><div class="txn-nm">Frontend Developer</div><div class="txn-dt">Toshkent · $800–1 200 · To'liq ish kuni</div></div><div class="txn-am" style="color:var(--green);font-size:.72rem">YANGI</div></div>
+    <div class="txn" onclick="toast('Ariza yuborildi: Data Analyst ✓')"><div class="txn-ic" style="background:rgba(245,158,11,.12)">📊</div><div class="txn-info"><div class="txn-nm">Data Analyst</div><div class="txn-dt">Remote · $600–1 000 · Erkin jadval</div></div><div class="txn-am" style="color:var(--green);font-size:.72rem">YANGI</div></div>
+    <div class="txn" onclick="toast('Ariza yuborildi: AI Engineer ✓')"><div class="txn-ic" style="background:rgba(139,92,246,.12)">🤖</div><div class="txn-info"><div class="txn-nm">AI Engineer</div><div class="txn-dt">ALTHERA · $1 500–2 500 · Full-time</div></div><div class="txn-am" style="color:var(--cyan);font-size:.72rem">ALTHERA</div></div>
+  </div>
+
+  <!-- PROFILE TAB -->
+  <div class="sa" id="t-profile" style="display:none">
+    <div class="prof-hero">
+      <div class="prof-av">A</div>
+      <div class="prof-name">Azimbek Allamurotov</div>
+      <div class="prof-email">azimbek@althera.uz</div>
+      <div class="prof-pro">✦ ALTHERA PRO</div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-box" style="text-align:center"><div class="stat-lb">Xizmatlar</div><div class="stat-val" style="color:var(--cyan)">32</div></div>
+      <div class="stat-box" style="text-align:center"><div class="stat-lb">Tranzaksiya</div><div class="stat-val" style="color:var(--gold)">148</div></div>
+      <div class="stat-box" style="text-align:center"><div class="stat-lb">Keshbek UZS</div><div class="stat-val" style="color:var(--green)">24 000</div></div>
+    </div>
+
+    <div style="padding:16px 16px 8px;font-size:.68rem;font-weight:700;color:var(--muted);letter-spacing:.15em;text-transform:uppercase">Sozlamalar</div>
+    <div class="mn-grp">
+      <div class="mn-row"><div class="mn-ic" style="background:rgba(16,185,129,.12)">🔔</div><div class="mn-txt">Bildirishnomalar</div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="mn-row"><div class="mn-ic" style="background:rgba(26,110,245,.12)">🔒</div><div class="mn-txt">Biometrik kirish</div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+      <div class="mn-row"><div class="mn-ic" style="background:rgba(245,158,11,.12)">🌙</div><div class="mn-txt">Qorong'i rejim</div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="mn-row"><div class="mn-ic" style="background:rgba(6,205,244,.12)">🌐</div><div class="mn-txt">Til</div><div class="mn-val">O'zbek</div><div class="mn-arr">›</div></div>
+    </div>
+
+    <div style="padding:16px 16px 8px;font-size:.68rem;font-weight:700;color:var(--muted);letter-spacing:.15em;text-transform:uppercase">Xavfsizlik</div>
+    <div class="mn-grp">
+      <div class="mn-row" onclick="toast('Digital ID: Tasdiqlangan ✓')"><div class="mn-ic" style="background:rgba(16,185,129,.12)">🪪</div><div class="mn-txt">Digital ID</div><div class="mn-val" style="color:var(--green)">Faol</div><div class="mn-arr">›</div></div>
+      <div class="mn-row" onclick="toast('KYC/AML: Tasdiqlangan ✓')"><div class="mn-ic" style="background:rgba(6,205,244,.12)">✅</div><div class="mn-txt">KYC / AML</div><div class="mn-val" style="color:var(--green)">Tasdiqlangan</div><div class="mn-arr">›</div></div>
+      <div class="mn-row" onclick="toast('Parol o\'zgartirildi ✓')"><div class="mn-ic" style="background:rgba(239,68,68,.12)">🔑</div><div class="mn-txt">Parolni o'zgartirish</div><div class="mn-arr">›</div></div>
+      <div class="mn-row" onclick="toast('Audit jurnal yuklanmoqda...','info')"><div class="mn-ic" style="background:rgba(139,92,246,.12)">📋</div><div class="mn-txt">Audit Jurnal</div><div class="mn-arr">›</div></div>
+    </div>
+
+    <div style="padding:16px 16px 8px;font-size:.68rem;font-weight:700;color:var(--muted);letter-spacing:.15em;text-transform:uppercase">ALTHERA</div>
+    <div class="mn-grp">
+      <div class="mn-row" onclick="go('s-roadmap')"><div class="mn-ic" style="background:rgba(139,92,246,.12)">🗺️</div><div class="mn-txt">24 Oylik Roadmap</div><div class="mn-arr">›</div></div>
+      <div class="mn-row" onclick="go('s-ai')"><div class="mn-ic" style="background:rgba(26,110,245,.12)">🤖</div><div class="mn-txt">AI Core imkoniyatlari</div><div class="mn-arr">›</div></div>
+      <div class="mn-row" onclick="toast('ALTHERA v1.0.0 MVP · © 2026','info')"><div class="mn-ic" style="background:rgba(6,205,244,.12)">ℹ️</div><div class="mn-txt">Versiya</div><div class="mn-val">MVP 1.0.0</div></div>
+      <div class="mn-row" onclick="toast('5 yulduz berdingiz! Rahmat ⭐')"><div class="mn-ic" style="background:rgba(245,158,11,.12)">⭐</div><div class="mn-txt">Ilovani baholang</div><div class="mn-arr">›</div></div>
+    </div>
+
+    <div style="padding:16px">
+      <button class="btn btn-red btn-full" onclick="doLogout()">🚪 &nbsp;Chiqish</button>
+    </div>
+    <div style="text-align:center;padding:0 20px 20px;font-size:.72rem;color:var(--muted);line-height:1.6">
+      © 2026 ALTHERA Super Platforma<br>Muallif: Allamurotov Azimbek<br>
+      <span style="color:var(--cyan)">althera.uz</span>
+    </div>
+  </div>
+
+  <!-- GLOBAL SERVICES TAB -->
+  <div class="sa" id="t-global" style="display:none">
+    <div class="promo fu" style="background:rgba(26,110,245,.08);border-color:rgba(26,110,245,.2);margin:16px 16px 0" onclick="toast('Global Services: 12 modul','info')">
+      <div class="promo-txt"><div class="promo-title">Global Services</div><div class="promo-sub">Dunyo bilan bog'liq barcha xizmatlar</div></div>
+      <div class="promo-ic">🌍</div>
+    </div>
+    <div class="gs-grid" style="margin-top:16px">
+      <div class="gs-card" onclick="toast('E-Commerce: tez kunda!','info')"><div class="gs-ic">🛒</div><div class="gs-title">E-Commerce</div><div class="gs-sub">Xalqaro va mahalliy savdo ekotizimi</div></div>
+      <div class="gs-card" onclick="toast('Travel Hub: aviachiptalar va mehmonxonalar!','info')"><div class="gs-ic">✈️</div><div class="gs-title">Travel Hub</div><div class="gs-sub">Chipta, mehmonxona, sug'urta</div></div>
+      <div class="gs-card" onclick="toast('Logistika: jo\'natmalar real vaqtda!','info')"><div class="gs-ic">📦</div><div class="gs-title">Logistika</div><div class="gs-sub">Kuzatuv va yetkazib berish</div></div>
+      <div class="gs-card" onclick="toast('Sug\'urta: avto, sog\'liq, hayot!','info')"><div class="gs-ic">🛡️</div><div class="gs-title">Sug'urta</div><div class="gs-sub">Avtomobil, sog'liq, mulk</div></div>
+      <div class="gs-card" onclick="toast('Telemeditsina: shifokorlar onlayn!','info')"><div class="gs-ic">🏥</div><div class="gs-title">Healthcare</div><div class="gs-sub">Telemeditsina va retseptlar</div></div>
+      <div class="gs-card" onclick="toast('Lifestyle AI: kundalik hayot yordamchisi!','info')"><div class="gs-ic">✨</div><div class="gs-title">Lifestyle AI</div><div class="gs-sub">Kundalik hayot va AI yordamchi</div></div>
+      <div class="gs-card" onclick="toast('Marketplace: sotuvchi bo\'ling!','info')"><div class="gs-ic">🏪</div><div class="gs-title">Marketplace</div><div class="gs-sub">Sotuvchi va xaridor uchun</div></div>
+      <div class="gs-card" onclick="toast('Crypto Exchange: BTC, ETH, USDT!','info')"><div class="gs-ic">₿</div><div class="gs-title">Crypto</div><div class="gs-sub">Kriptovalyuta almashinuvi</div></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div id="bnav">
+    <div class="ni act" id="ni-home" onclick="switchTab('home')">
+      <div class="ni-ic">🏠</div><div class="ni-lb">Asosiy</div><div class="ni-dot"></div>
+    </div>
+    <div class="ni" id="ni-wallet" onclick="switchTab('wallet')">
+      <div class="ni-ic">💳</div><div class="ni-lb">Hamyon</div><div class="ni-dot"></div>
+    </div>
+    <div class="ni" id="ni-gov" onclick="switchTab('gov')">
+      <div class="ni-ic">🏛️</div><div class="ni-lb">Davlat</div><div class="ni-dot"></div>
+    </div>
+    <div class="ni" id="ni-learn" onclick="switchTab('learn')">
+      <div class="ni-ic">🎓</div><div class="ni-lb">Ta'lim</div><div class="ni-dot"></div>
+    </div>
+    <div class="ni" id="ni-profile" onclick="switchTab('profile')">
+      <div class="ni-ic">👤</div><div class="ni-lb">Profil</div><div class="ni-dot"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ TAX SCREEN ════ -->
+<div class="scr hide" id="s-tax">
+  <div class="sb">
+    <div class="sb-back" onclick="back()">← Orqaga</div>
+    <div class="sb-title">Soliq Hub</div>
+    <div class="sb-r"><span class="pill pill-green">FAOL</span></div>
+  </div>
+  <div class="sa" style="padding-bottom:30px">
+    <div class="tax-sum">
+      <div style="font-weight:800;font-size:1rem;margin-bottom:14px">📊 2026 Soliq Holati</div>
+      <div class="tax-row"><div class="tax-lb">Yillik daromad</div><div class="tax-vl">62 400 000 UZS</div></div>
+      <div class="tax-row"><div class="tax-lb">To'langan soliq</div><div class="tax-vl">6 240 000 UZS</div></div>
+      <div class="tax-row"><div class="tax-lb">Soliq stavkasi</div><div class="tax-vl">12%</div></div>
+      <div class="tax-row"><div class="tax-lb">Keshbek (qaytariladi)</div><div class="tax-vl" style="color:var(--green)">+480 000 UZS</div></div>
+      <div class="tax-row"><div class="tax-lb">Keyingi to'lov muddati</div><div class="tax-vl" style="color:var(--gold)">1-may, 2026</div></div>
+    </div>
+    <div style="padding:0 16px 16px"><button class="btn btn-primary btn-full" onclick="toast('Keshbek hamyonga qo\'shildi: +480 000 UZS ✓')">💰 Keshbek olish (+480 000 UZS)</button></div>
+    <div class="sec-hdr"><div class="sec-title">Soliq Xizmatlari</div></div>
+    <div class="gov-grid" style="padding-top:0">
+      <div class="gov-card" onclick="toast('Deklaratsiya shakli ochildi ✓')"><div class="gov-badge pill pill-cyan">YANGI</div><div class="gov-ic">📝</div><div class="gov-title">Deklaratsiya</div><div class="gov-sub">Onlayn topshirish</div></div>
+      <div class="gov-card" onclick="openNumpad('tax')"><div class="gov-ic">💳</div><div class="gov-title">Soliq To'lash</div><div class="gov-sub">Tezkor to'lov</div></div>
+      <div class="gov-card" onclick="toast('AI: Soliq optimizatsiyasi hisoblandi!','info')"><div class="gov-ic">🤖</div><div class="gov-title">AI Tahlil</div><div class="gov-sub">Soliq optimallashtirish</div></div>
+      <div class="gov-card" onclick="toast('Soliq tarixi yuklanmoqda...','info')"><div class="gov-ic">📜</div><div class="gov-title">Tarix</div><div class="gov-sub">O'tgan to'lovlar</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ ROADMAP SCREEN ════ -->
+<div class="scr hide" id="s-roadmap">
+  <div class="sb">
+    <div class="sb-back" onclick="back()">← Orqaga</div>
+    <div class="sb-title">24 Oylik Roadmap</div>
+    <div class="sb-r"></div>
+  </div>
+  <div class="sa" style="padding-bottom:30px">
+    <div style="padding:16px 20px;color:var(--t2);font-size:.85rem;line-height:1.6">
+      ALTHERA ning 0 dan global miqyosgacha bo'lgan rivojlanish yo'li — har bir bosqichda yangi modullar va integratsiyalar qo'shiladi.
+    </div>
+
+    <div class="rm-phase">
+      <div class="rm-phase-hdr" style="background:rgba(6,205,244,.05)">
+        <div class="rm-phase-num" style="background:rgba(6,205,244,.15);color:var(--cyan)">MVP</div>
+        <div class="rm-phase-info">
+          <div class="rm-phase-period" style="color:var(--cyan)">0–6 oy · Hozir ishga tushirilmoqda</div>
+          <div class="rm-phase-title">Asosiy Infratuzilma</div>
+        </div>
+        <div class="rm-phase-status pill pill-cyan">FAOL</div>
+      </div>
+      <div class="rm-items">
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--cyan)"></div><div class="rm-item-txt">Smart Wallet + QR/NFC To'lovlar</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--cyan)"></div><div class="rm-item-txt">SSO & Biometrik Autentifikatsiya</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--cyan)"></div><div class="rm-item-txt">Digital ID (Raqamli Pasport)</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--cyan)"></div><div class="rm-item-txt">Tax Hub Basic (Deklaratsiya, Keshbek)</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--cyan)"></div><div class="rm-item-txt">P2P Pul O'tkazmalar</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--cyan)"></div><div class="rm-item-txt">ALTHERA AI Core v1</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--cyan)"></div><div class="rm-item-txt">PWA Mobil Ilova (iOS + Android)</div></div>
+      </div>
+    </div>
+
+    <div class="rm-phase">
+      <div class="rm-phase-hdr">
+        <div class="rm-phase-num" style="background:rgba(139,92,246,.15);color:var(--purple)">β</div>
+        <div class="rm-phase-info">
+          <div class="rm-phase-period" style="color:var(--purple)">6–12 oy · 2026 Q3–Q4</div>
+          <div class="rm-phase-title">Beta Kengayish</div>
+        </div>
+        <div class="rm-phase-status pill pill-purple">REJALASHTIRILGAN</div>
+      </div>
+      <div class="rm-items">
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--purple)"></div><div class="rm-item-txt">Universal Banking (Uzcard/Humo/Visa/MC)</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--purple)"></div><div class="rm-item-txt">200+ E-Gov Xizmatlari Integratsiyasi</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--purple)"></div><div class="rm-item-txt">Crowdfunding & P2B Kreditlash Pilot</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--purple)"></div><div class="rm-item-txt">AI Scoring & Kredit Reytingi</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--purple)"></div><div class="rm-item-txt">EdTech Platform (Kurslar + Sertifikat)</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--purple)"></div><div class="rm-item-txt">Insurance Center (Embedded)</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--purple)"></div><div class="rm-item-txt">Kommunal To'lovlar Avtomatizatsiyasi</div></div>
+      </div>
+    </div>
+
+    <div class="rm-phase">
+      <div class="rm-phase-hdr">
+        <div class="rm-phase-num" style="background:rgba(245,158,11,.15);color:var(--gold)">1.0</div>
+        <div class="rm-phase-info">
+          <div class="rm-phase-period" style="color:var(--gold)">12–18 oy · 2027 Q1–Q2</div>
+          <div class="rm-phase-title">To'liq Ishga Tushirish</div>
+        </div>
+        <div class="rm-phase-status pill pill-gold">REJALASHTIRILGAN</div>
+      </div>
+      <div class="rm-items">
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--gold)"></div><div class="rm-item-txt">Investitsiya Platformasi (Brokerlik + IPO)</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--gold)"></div><div class="rm-item-txt">Credit Marketplace (BNPL + Mikrokreditlar)</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--gold)"></div><div class="rm-item-txt">Kengaytirilgan AI Core v2 (LLM Copilot)</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--gold)"></div><div class="rm-item-txt">Global E-Commerce Marketplace</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--gold)"></div><div class="rm-item-txt">Healthcare (Telemeditsina + E-Karta)</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--gold)"></div><div class="rm-item-txt">Travel Hub (Aviachipta + Mehmonxona)</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--gold)"></div><div class="rm-item-txt">Crypto Exchange (BTC, ETH, USDT)</div></div>
+      </div>
+    </div>
+
+    <div class="rm-phase">
+      <div class="rm-phase-hdr">
+        <div class="rm-phase-num" style="background:rgba(16,185,129,.15);color:var(--green)">🌍</div>
+        <div class="rm-phase-info">
+          <div class="rm-phase-period" style="color:var(--green)">18–24 oy · 2027 Q3–Q4</div>
+          <div class="rm-phase-title">Regional & Global Kengayish</div>
+        </div>
+        <div class="rm-phase-status pill pill-green">REJALASHTIRILGAN</div>
+      </div>
+      <div class="rm-items">
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--green)"></div><div class="rm-item-txt">Cross-border To'lovlar (Xalqaro P2P)</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--green)"></div><div class="rm-item-txt">Ministry Portal (Diplomatik Kanal)</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--green)"></div><div class="rm-item-txt">Prezidentlar/Bosh Vazirlar uchun B2G</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--green)"></div><div class="rm-item-txt">Qozog'iston, Tojikiston, Qirg'iziston</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--green)"></div><div class="rm-item-txt">Xalqaro Hamkorlar (Visa, Mastercard, UN)</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--green)"></div><div class="rm-item-txt">GDPR + Xalqaro Compliance</div></div>
+        <div class="rm-item"><div class="rm-item-dot" style="background:var(--green)"></div><div class="rm-item-txt">Global Super Platforma Maqomi</div></div>
+      </div>
+    </div>
+
+    <div style="margin:16px;border-radius:var(--r2);padding:20px;background:rgba(26,110,245,.08);border:1px solid rgba(26,110,245,.15)">
+      <div style="font-weight:800;font-size:1rem;margin-bottom:8px">📊 Biznes Ko'rsatkichlari (Maqsad)</div>
+      <div class="tax-row"><div class="tax-lb">SOM — 3 yil maqsadi</div><div class="tax-vl">2 000 000+ foydalanuvchi</div></div>
+      <div class="tax-row"><div class="tax-lb">LTV:CAC nisbati</div><div class="tax-vl" style="color:var(--green)">3x+</div></div>
+      <div class="tax-row"><div class="tax-lb">CAC qoplanish muddati</div><div class="tax-vl">6–9 oy</div></div>
+      <div class="tax-row"><div class="tax-lb">Uptime kafolati</div><div class="tax-vl">99.9%</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ AI CORE SCREEN ════ -->
+<div class="scr hide" id="s-ai">
+  <div class="sb">
+    <div class="sb-back" onclick="back()">← Orqaga</div>
+    <div class="sb-title">AI Core</div>
+    <div class="sb-r"><span class="pill pill-cyan">FAOL</span></div>
+  </div>
+  <div class="sa" style="padding-bottom:30px">
+    <div class="ai-hero">
+      <div class="ai-pulse">🧠</div>
+      <div class="ai-title">ALTHERA AI Core</div>
+      <div class="ai-sub">Markaziy orkestratsiya tizimi — barcha 32 modul real vaqtda sinxronlashtiriladi. LLM Copilot, Fraud Detection, SLA Monitoring va ko'p qo'shimcha.</div>
+    </div>
+
+    <div class="sec-hdr"><div class="sec-title">AI Imkoniyatlari</div></div>
+    <div class="ai-cap" onclick="toast('LLM Copilot: Savolingizni yozing!','info')">
+      <div class="ai-cap-ic">💬</div>
+      <div><div class="ai-cap-title">LLM Copilot & NLP</div><div class="ai-cap-desc">Moliyaviy, huquqiy va ta'lim so'rovlariga aqlli yordamchi. O'zbek, Rus va Ingliz tillarida.</div></div>
+    </div>
+    <div class="divider"></div>
+    <div class="ai-cap" onclick="toast('Fraud aniqlash: 0 shubhali tranzaksiya','info')">
+      <div class="ai-cap-ic">🛡️</div>
+      <div><div class="ai-cap-title">Fraud & Anomaliya Aniqlash</div><div class="ai-cap-desc">Real vaqt tranzaksiya tahlili. Shubhali holatlar avtomatik bloklanadi.</div></div>
+    </div>
+    <div class="divider"></div>
+    <div class="ai-cap" onclick="toast('SLA: Barcha xizmatlar 99.9% uptime','info')">
+      <div class="ai-cap-ic">⚡</div>
+      <div><div class="ai-cap-title">SLA Monitoring & Marshrutlash</div><div class="ai-cap-desc">Javob vaqti optimallashtirilgan. Kritik so'rovlar ustuvor bajariladi.</div></div>
+    </div>
+    <div class="divider"></div>
+    <div class="ai-cap" onclick="toast('Kross-modul: Soliq keshbeki → Hamyon!','info')">
+      <div class="ai-cap-ic">🔄</div>
+      <div><div class="ai-cap-title">Kross-modul Avtomatlashtirish</div><div class="ai-cap-desc">Bir moduldagi voqea boshqasida avtomatik ishga tushiradi. Masalan: soliq keshbeki → investitsiya.</div></div>
+    </div>
+    <div class="divider"></div>
+    <div class="ai-cap" onclick="toast('AI Scoring: Kredit reytingingiz 720/850','info')">
+      <div class="ai-cap-ic">📊</div>
+      <div><div class="ai-cap-title">AI Scoring & Kreditlash</div><div class="ai-cap-desc">Risk profiliga asoslangan kredit va sug'urta tavsiyalari. Bank darajasida kriptografiya.</div></div>
+    </div>
+    <div class="divider"></div>
+    <div class="ai-cap" onclick="toast('Explainable AI: Qarorlar tushuntirilyapti','info')">
+      <div class="ai-cap-ic">🔍</div>
+      <div><div class="ai-cap-title">Explainable AI & Audit Trail</div><div class="ai-cap-desc">Har bir AI qarorining izohi va tekshirish jurnali. Regulyator va investor uchun shaffoflik.</div></div>
+    </div>
+
+    <div style="padding:16px">
+      <button class="btn btn-primary btn-full" onclick="toast('AI Core bilan bog\'landingiz ✓')">🤖 AI Copilot bilan suhbat</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ MODAL ════ -->
+<div id="modal-ov" onclick="closeModal(event)">
+  <div id="modal-box">
+    <div class="m-handle"></div>
+    <div class="m-title" id="m-title">Pul Yuborish</div>
+    <div class="m-sub" id="m-sub">Miqdorni kiriting</div>
+    <div class="amt-display"><span id="amt-val">0</span> <span class="amt-cur">UZS</span></div>
+    <div class="numpad">
+      <div class="np-btn" onclick="np('1')">1</div><div class="np-btn" onclick="np('2')">2</div><div class="np-btn" onclick="np('3')">3</div>
+      <div class="np-btn" onclick="np('4')">4</div><div class="np-btn" onclick="np('5')">5</div><div class="np-btn" onclick="np('6')">6</div>
+      <div class="np-btn" onclick="np('7')">7</div><div class="np-btn" onclick="np('8')">8</div><div class="np-btn" onclick="np('9')">9</div>
+      <div class="np-btn" onclick="np('000')" style="font-size:.85rem">000</div>
+      <div class="np-btn" onclick="np('0')">0</div>
+      <div class="np-btn" onclick="np('del')">⌫</div>
+    </div>
+    <div style="padding:10px 0 0">
+      <button class="btn btn-primary btn-full" id="m-confirm" onclick="confirmModal()">Tasdiqlash →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ TOAST ════ -->
+<div id="toast">✓ <span id="toast-msg"></span></div>
+
+<script>
+// ═══ STATE ═══
+const state = {
+  screen: 's-splash',
+  prevScreen: null,
+  tab: 'home',
+  amount: '',
+  modalType: ''
+};
+
+// ═══ SCREEN MANAGEMENT ═══
+function go(id) {
+  const cur = document.getElementById(state.screen);
+  const next = document.getElementById(id);
+  if (!next || id === state.screen) return;
+  cur.classList.replace('show', 'hide');
+  next.classList.replace('hide', 'show');
+  state.prevScreen = state.screen;
+  state.screen = id;
+}
+
+function back() {
+  if (state.prevScreen) go(state.prevScreen);
+  else go('s-main');
+}
+
+// ═══ TAB SWITCHING ═══
+function switchTab(tab) {
+  if (state.screen !== 's-main') go('s-main');
+  ['home','wallet','gov','learn','profile','global'].forEach(t => {
+    const el = document.getElementById('t-'+t);
+    if (el) el.style.display = 'none';
+    const ni = document.getElementById('ni-'+t);
+    if (ni) ni.classList.remove('act');
+  });
+  const tabEl = document.getElementById('t-'+tab);
+  if (tabEl) tabEl.style.display = 'block';
+  const niEl = document.getElementById('ni-'+tab);
+  if (niEl) niEl.classList.add('act');
+  state.tab = tab;
+}
+
+// ═══ AUTH ═══
+function doLogin() {
+  go('s-main');
+  toast('ALTHERA ga xush kelibsiz! 🎉');
+}
+function doLogout() {
+  go('s-onboard');
+  toast('Chiqildi. Qayta keling! 👋', 'info');
+}
+function togglePw() {
+  const el = document.getElementById('l-pass');
+  el.type = el.type === 'password' ? 'text' : 'password';
+}
+
+// ═══ NUMPAD MODAL ═══
+const modalCfg = {
+  send:     {title:'Pul Yuborish', sub:'Telefon yoki IBAN kiriting', btn:'Yuborish →'},
+  receive:  {title:'Qabul Qilish', sub:'Miqdorni kiriting', btn:'Adres Ko\'rsatish →'},
+  topup:    {title:'To\'ldirish', sub:'To\'ldirish miqdori', btn:'To\'ldirish →'},
+  tax:      {title:'Soliq To\'lash', sub:'To\'lov miqdori', btn:'To\'lash →'},
+  communal: {title:'Kommunal To\'lov', sub:'Hisob raqami kiritildi', btn:'To\'lash →'}
+};
+function openNumpad(type) {
+  state.modalType = type;
+  state.amount = '';
+  const cfg = modalCfg[type] || {title:'To\'lov', sub:'Miqdor', btn:'Tasdiqlash'};
+  document.getElementById('m-title').textContent = cfg.title;
+  document.getElementById('m-sub').textContent = cfg.sub;
+  document.getElementById('m-confirm').textContent = cfg.btn;
+  document.getElementById('amt-val').textContent = '0';
+  document.getElementById('modal-ov').classList.add('show');
+}
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-ov'))
+    document.getElementById('modal-ov').classList.remove('show');
+}
+function np(v) {
+  if (v === 'del') state.amount = state.amount.slice(0, -1);
+  else if (state.amount.length < 10) state.amount += v;
+  const n = parseInt(state.amount || '0');
+  document.getElementById('amt-val').textContent = n.toLocaleString('ru-RU');
+}
+function confirmModal() {
+  document.getElementById('modal-ov').classList.remove('show');
+  const msgs = {
+    send:'Pul muvaffaqiyatli yuborildi ✓',
+    receive:'To\'lov manzili nusxalandi ✓',
+    topup:'Hisob to\'ldirildi ✓',
+    tax:'Soliq to\'landi ✓',
+    communal:'Kommunal to\'lov amalga oshirildi ✓'
+  };
+  toast(msgs[state.modalType] || 'Amal bajarildi ✓');
+}
+
+// ═══ TOAST ═══
+let toastTimer;
+function toast(msg, type='') {
+  clearTimeout(toastTimer);
+  const el = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  el.className = 'toast show' + (type ? ' '+type : '');
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ═══ CLOCK ═══
+function tick() {
+  const now = new Date();
+  const h = now.getHours().toString().padStart(2,'0');
+  const m = now.getMinutes().toString().padStart(2,'0');
+  const el = document.getElementById('clk');
+  if (el) el.textContent = h+':'+m;
+}
+tick();
+setInterval(tick, 10000);
+
+// ═══ GOV CATS ═══
+document.querySelectorAll('.gov-cat').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.gov-cat').forEach(b => b.classList.remove('act'));
+    this.classList.add('act');
+  });
+});
+
+// ═══ SPLASH → ONBOARD ═══
+setTimeout(() => go('s-onboard'), 2200);
+
+// ═══ SERVICE WORKER ═══
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
